@@ -61,7 +61,7 @@ export const mintNFT = async(url, name, description) => {
     } 
     const tokenURI = pinataResponse.pinataUrl;  
 
-    window.contract = await new web3.eth.Contract(contractABI, contractAddress);//loadContract();
+    window.contract = await new web3.eth.Contract(contractABI, contractAddress);
 
     const transactionParameters = {
         to: contractAddress, // Required except during contract publications.

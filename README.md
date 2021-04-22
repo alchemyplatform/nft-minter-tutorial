@@ -1,6 +1,6 @@
 # NFT Minter Tutorial Files
 
-This repository contains the starter files (minter-starter-files) and completed version (nft-tutorial) of Alchemy's [NFT Minter tutorial](). 
+This repository contains the starter files (minter-starter-files) and completed version (nft-tutorial) of Alchemy's [NFT Minter tutorial](https://docs.alchemyapi.io/alchemy/tutorials/nft-minter). 
 
 ## About the tutorial
 

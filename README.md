@@ -8,4 +8,4 @@ In this beginner-level tutorial, we'll teach you how to connect your smart contr
 
 ## Installation notes
 
-Before running `npm start` in your terminal to start the React project, we recommend running `npm install` to download all the package dependencies.
+Before running `npm start` in your terminal to start the React project, run `npm install` to download all the package dependencies.

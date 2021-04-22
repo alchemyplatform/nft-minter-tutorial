@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { connectWallet, mintNFT } from "./util/minting.js";
+import { connectWallet, mintNFT } from "./util/interact.js";
 
 const Minter = (props) => {
   const [isConnected, setConnectedStatus] = useState(false);
@@ -9,9 +9,7 @@ const Minter = (props) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [url, setURL] = useState("");
-  {
-    /* useEffect --> any time component is rendered or re-rendered (anytime when update to props and on first time page load)*/
-  }
+ 
 
   useEffect(async () => {
     if (window.ethereum) {

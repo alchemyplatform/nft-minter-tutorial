@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 const Minter = (props) => {
 
   //State variables
-  const [isConnected, setConnectedStatus] = useState(false);
   const [walletAddress, setWallet] = useState("");
   const [status, setStatus] = useState("");
   const [name, setName] = useState("");
@@ -12,7 +11,7 @@ const Minter = (props) => {
  
   useEffect(async () => { //TODO: implement
     
-  });
+  }, []);
 
   const connectWalletPressed = async () => { //TODO: implement
    
@@ -25,13 +24,13 @@ const Minter = (props) => {
   return (
     <div className="Minter">
       <button id="walletButton" onClick={connectWalletPressed}>
-        {isConnected ? (
-          "👛 Connected: " +
+        {walletAddress.length > 0 ? (
+          "Connected: " +
           String(walletAddress).substring(0, 6) +
           "..." +
           String(walletAddress).substring(38)
         ) : (
-          <span>👛 Connect Wallet</span>
+          <span>Connect Wallet</span>
         )}
       </button>
 

@@ -1,50 +1,61 @@
 import { useEffect, useState } from "react";
-import { connectWallet, mintNFT } from "./util/interact.js";
+import {
+  connectWallet,
+  getCurrentWalletConnected,
+  mintNFT,
+} from "./util/interact.js";
 
 const Minter = (props) => {
-  const [isConnected, setConnectedStatus] = useState(false);
   const [walletAddress, setWallet] = useState("");
   const [status, setStatus] = useState("");
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [url, setURL] = useState("");
- 
 
   useEffect(async () => {
+    const { address, status } = await getCurrentWalletConnected();
+
+    setWallet(address);
+    setStatus(status);
+
+    addWalletListener();
+  }, []);
+
+  function addWalletListener() {
     if (window.ethereum) {
-      try {
-        const accounts = await window.ethereum.request({ method: "eth_accounts" })
-        if (accounts.length) {
-          setConnectedStatus(true);
+      window.ethereum.on("accountsChanged", (accounts) => {
+        if (accounts.length > 0) {
           setWallet(accounts[0]);
+          setStatus("👆🏽 Write a message in the text-field above.");
         } else {
-          setConnectedStatus(false);
+          setWallet("");
           setStatus("🦊 Connect to Metamask using the top right button.");
         }
-      } catch {
-        setConnectedStatus(false);
-        setStatus(
-          "🦊 Connect to Metamask using the top right button. " +
-            walletAddress
-        );
-      }
+      });
+    } else {
+      setStatus(
+        <p>
+          {" "}
+          🦊{" "}
+          <a target="_blank" href={`https://metamask.io/download.html`}>
+            You must install Metamask, a virtual Ethereum wallet, in your
+            browser.
+          </a>
+        </p>
+      );
     }
-  });
+  }
 
   const connectWalletPressed = async () => {
     const walletResponse = await connectWallet();
-    setConnectedStatus(walletResponse.connectedStatus);
     setStatus(walletResponse.status);
-    if (isConnected) {
-      setWallet(walletAddress);
-    }
+    setWallet(walletResponse.address);
   };
 
   const onMintPressed = async () => {
     const { success, status } = await mintNFT(url, name, description);
     setStatus(status);
-    setConnectedStatus(success)
     if (success) {
       setName("");
       setDescription("");
@@ -55,13 +66,13 @@ const Minter = (props) => {
   return (
     <div className="Minter">
       <button id="walletButton" onClick={connectWalletPressed}>
-        {isConnected ? (
-          "👛 Connected: " +
+        {walletAddress.length > 0 ? (
+          "Connected: " +
           String(walletAddress).substring(0, 6) +
           "..." +
           String(walletAddress).substring(38)
         ) : (
-          <span>👛 Connect Wallet</span>
+          <span>Connect Wallet</span>
         )}
       </button>
 

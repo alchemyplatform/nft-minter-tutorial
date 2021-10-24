@@ -14,4 +14,4 @@ REACT_APP_PINATA_KEY = <pinata-key>
 REACT_APP_PINATA_SECRET = <pinata-secret>
 REACT_APP_ALCHEMY_KEY = https://eth-ropsten.alchemyapi.io/v2/<alchemy-key>
 ```
-4. Run `npm start`in your terminal to open the minter in your browswera at http://localhost:3000/.
+4. Run `npm start`in your terminal to open the minter in your browser at http://localhost:3000/.

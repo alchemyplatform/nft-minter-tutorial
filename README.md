@@ -1,11 +1,3 @@
-# 📝 NFT Minter Tutorial Files
-
-This repository contains the starter files (`minter-starter-files`) and completed version (`nft-tutorial`) of Alchemy's [NFT Minter tutorial](https://docs.alchemyapi.io/alchemy/tutorials/nft-minter). 
-
-## ℹ️ About the tutorial
-
-In this beginner-level tutorial, we'll teach you how to connect your smart contract to your React dApp project by building an NFT Minter using Metamask and Web3. 
-
-## 🤔 Note
-
-Neither the `minter-starter-files` nor the `nft-tutorial` have their `node_modules` folder. So before running `npm start` in your terminal to start the React project, you need to run `npm install` to download all the package dependencies.
+# Ewhachain2022-bootcamp
+안녕하세요, Ewhachain Blockchain Bootcamp 2022 5월 21일자 자료입니다. 
+컨트랙트 배포부터, 프론트엔드 개발까지 담고 있습니다.

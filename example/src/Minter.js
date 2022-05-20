@@ -77,24 +77,25 @@ const Minter = (props) => {
       </button>
 
       <br></br>
-      <h1 id="title">🧙‍♂️ Alchemy NFT Minter</h1>
+      <h1 id="title">Certification NFT Minter</h1>
       <p>
-        Simply add your asset's link, name, and description, then press "Mint."
+        아래에 Pinata IPFS 기반 링크, NFT 이름, NFT 설명을 작성하고, "MINT" 버튼을 클릭하세요!
       </p>
+      <br></br>
       <form>
-        <h2>🖼 Link to asset: </h2>
+        <h2>Link to asset: </h2>
         <input
           type="text"
           placeholder="e.g. https://gateway.pinata.cloud/ipfs/<hash>"
           onChange={(event) => setURL(event.target.value)}
         />
-        <h2>🤔 Name: </h2>
+        <h2>Name: </h2>
         <input
           type="text"
           placeholder="e.g. My first NFT!"
           onChange={(event) => setName(event.target.value)}
         />
-        <h2>✍️ Description: </h2>
+        <h2>Description: </h2>
         <input
           type="text"
           placeholder="e.g. Even cooler than cryptokitties ;)"

@@ -1,18 +1,18 @@
 import { useState } from 'react';
 import NftCard from './components/nftcard';
 import {fetchNFTs} from './util/fetchNFTs';
+require("dotenv").config();
 
 const Marketplace = () => {
 
-    const [owner, setOwner] = useState("")
     const [NFTs, setNFTs] = useState("")
-    const contractAddress = "0xAf289f4A821b8a7D92b0f3163A24527C2399a50B";
+    const contractAddress = process.env.CONTRACT_ADDRESS
 
     return (
         <div className='marketplace'>
-            <button onClick={() => {fetchNFTs("0x90D3f8631A67D0bf2c053Ccf95668BE101f9e95f", setNFTs, contractAddress)}}>Search</button>
+            <button onClick={() => {fetchNFTs(contractAddress, setNFTs, contractAddress)}}>Search</button>
 
-            <section className='flex flex-wrap justify-center'>
+            <section>
                 {
                     NFTs ? NFTs.map(NFT => {
                         

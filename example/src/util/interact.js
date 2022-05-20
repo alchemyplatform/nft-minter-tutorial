@@ -2,9 +2,11 @@ import { pinJSONToIPFS } from "./pinata.js";
 require("dotenv").config();
 const alchemyKey = process.env.REACT_APP_ALCHEMY_KEY;
 const contractABI = require("../contract-abi.json");
-const contractAddress = "0xAf289f4A821b8a7D92b0f3163A24527C2399a50B";
+const contractAddress = process.env.CONTRACT_ADDRESS;
 const { createAlchemyWeb3 } = require("@alch/alchemy-web3");
 const web3 = createAlchemyWeb3(alchemyKey);
+
+//metamask 월렛과 연결하거나, mint를 하는 등 실제 온체인과 소통하는 코드들입니다. 
 
 export const connectWallet = async () => {
   if (window.ethereum) {

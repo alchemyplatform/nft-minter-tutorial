@@ -1,4 +1,4 @@
-
+//owner(자신)가 소유하고 있는 NFT 데이터 가져오기
 const getAddressNFTs = async (endpoint, owner, contractAddress, retryAttempt) => {
     if (retryAttempt === 5) {
         return;
@@ -23,7 +23,7 @@ const getAddressNFTs = async (endpoint, owner, contractAddress, retryAttempt) =>
     }
 }
 
-
+//NFT 데이터 반환하기
 const fetchNFTs = async (owner, setNFTs, contractAddress) => {
     let endpoint = "https://eth-rinkeby.alchemyapi.io/v2/GXdaB56MZ5ko2VRwwrUe1rWl1Bi8til4"
     const data = await getAddressNFTs(endpoint, owner, contractAddress)
@@ -32,19 +32,19 @@ const fetchNFTs = async (owner, setNFTs, contractAddress) => {
         console.log("NFTS metadata", NFTs)
         let fullfilledNFTs = NFTs.filter(NFT => NFT.status == "fulfilled")
         console.log("NFTS", fullfilledNFTs)
+        //특정 NFT들의 메타데이터 가져와서 정리한 것들을 가지고 Marketplace.js의 setNFTs를 통해 값을 전달
         setNFTs(fullfilledNFTs)
     } else {
         setNFTs(null)
     }
 }
 
-
+//특정 NFT들의 메타데이터 가져와서 정리하기
 const getNFTsMetadata = async (NFTS, endpoint) => {
     const NFTsMetadata = await Promise.allSettled(NFTS.map(async (NFT) => {
         const metadata = await fetch(`${endpoint}/getNFTMetadata?contractAddress=${NFT.contract.address}&tokenId=${NFT.id.tokenId}`,).then(data => data.json())
         let image;
         console.log("metadata", metadata);
-        console.log("왜안돼", String(metadata.metadata.image).length);
         if (String(metadata.metadata.image).length) {
             image = String(metadata.metadata.image);
         } else {

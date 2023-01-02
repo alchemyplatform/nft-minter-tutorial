@@ -105,7 +105,7 @@ export const mintNFT = async (url, name, description) => {
   }
 
   //make metadata
-  const metadata = new Object();
+  const metadata = {};
   metadata.name = name;
   metadata.image = url;
   metadata.description = description;

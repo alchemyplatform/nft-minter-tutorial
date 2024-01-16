@@ -1,11 +1,12 @@
 import './App.css';
-import Minter from './Minter'
+import SocialPass from './SocialPass'
+import HotSpot from './HotSpot';
 
 function App() {
   return (
     <div className="App">
-      <Minter></Minter>
-      
+      <SocialPass></SocialPass>
+      <HotSpot></HotSpot>
     </div>
   );
 }

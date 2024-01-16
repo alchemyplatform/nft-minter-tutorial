@@ -1,15 +1,13 @@
 import { pinJSONToIPFS } from "./pinata.js";
 require("dotenv").config();
 const alchemyKey = process.env.REACT_APP_ALCHEMY_KEY;
-//const contractABI = require("../contract-abi.json");
-
-// Assume the desired network ID (1 for Mainnet, 11155111 for Sepolia, etc.)
-// @see: https://chainlist.org
-const desiredNetworkId = 11155111; //Sepolia
 const { createAlchemyWeb3 } = require("@alch/alchemy-web3");
 const web3 = createAlchemyWeb3(alchemyKey);
 const etherscanLink = require('@metamask/etherscan-link')
 
+// Config for Development
+// https://github.com/Aquaverse/social-mining-contracts/blob/main/README.m
+const desiredNetworkId = 11155111; //Sepolia
 
 export const connectWallet = async () => {
   if (window.ethereum) {
@@ -91,9 +89,7 @@ export const getCurrentWalletConnected = async () => {
 
 
 async function switchChain() {
-  // Assume the desired network ID (1 for Mainnet, 3 for Ropsten, etc.)
-  //const desiredNetworkId = 1; 
-
+  
   // Request the current network ID from MetaMask
   const currentNetworkId = await window.ethereum.request({ method: 'net_version' });
 
@@ -137,13 +133,15 @@ async function excuteTransaction(transactionParameters) {
   }
 }
 
-const socialPassContractABI = require("../abi/SocialPass.json");
-const socialPassContractAddress = "0xAe61f1594d47E53434f235065cBd1B8324789596";
-const tokenURI = "ipfs://bafkreibto3z7jrwonc7swekfv4q2xy6dofe7y34np62m5m72gc6biglhjm";
-
 export const socialpass_selfMint = async () => {
+  // Source: https://github.com/Aquaverse/social-mining-contracts/blob/main/abi/SocialPass.json
+  const socialPassContractABI = require("../abi/SocialPass.json");
+    // From Server API
+  const socialPassContractAddress = "0xAe61f1594d47E53434f235065cBd1B8324789596";
+  const tokenURI = "ipfs://bafkreibto3z7jrwonc7swekfv4q2xy6dofe7y34np62m5m72gc6biglhjm";
+
   await switchChain();
-  const contract = await new web3.eth.Contract(socialPassContractABI, socialPassContractAddress);
+  const contract = new web3.eth.Contract(socialPassContractABI, socialPassContractAddress);
 
   const transactionParameters = {
     to: socialPassContractAddress, // Required except during contract publications.
@@ -157,21 +155,23 @@ export const socialpass_selfMint = async () => {
   return await excuteTransaction(transactionParameters);
 };
 
-const hotSpotContractABI = require("../abi/HotSpot.json");
-const hotSpotContractAddress = "0x8faB9ca27aa718B2B3eF0515AF3Bd07bB21EE99C";
-const costPrice_ether = 0.005
-//const tokenURI = "ipfs://bafkreibto3z7jrwonc7swekfv4q2xy6dofe7y34np62m5m72gc6biglhjm";
 
 export const hotspot_mint = async () => {
-  await switchChain();
+  // Source: https://github.com/Aquaverse/social-mining-contracts/blob/main/abi/HotSpot.json
+  const hotSpotContractABI = require("../abi/HotSpot.json");
+  // From Server API
+  const hotSpotContractAddress = "0x8faB9ca27aa718B2B3eF0515AF3Bd07bB21EE99C";
+  const tokenURI = "ipfs://bafkreibto3z7jrwonc7swekfv4q2xy6dofe7y34np62m5m72gc6biglhjm";
+  const costPrice_ether = '0.006'
 
-  const weiAmount = 1//ethers.utils.parseEther(costPrice_ether.toString());
-  const contract = await new web3.eth.Contract(hotSpotContractABI, hotSpotContractAddress);
+  await switchChain();
+  const weiAmount = web3.utils.toWei(costPrice_ether, "ether")
+  const contract = new web3.eth.Contract(hotSpotContractABI, hotSpotContractAddress);
 
   const transactionParameters = {
-    to: socialPassContractAddress, // Required except during contract publications.
+    to: hotSpotContractAddress, // Required except during contract publications.
     from: window.ethereum.selectedAddress, // must match user's active address.
-    value: weiAmount,
+    value: web3.utils.toHex(weiAmount),
     data: contract.methods
       .mint(tokenURI)
       .encodeABI(),

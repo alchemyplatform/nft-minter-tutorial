@@ -161,7 +161,7 @@ export const hotspot_mint = async () => {
   const hotSpotContractABI = require("../abi/HotSpot.json");
   // From Server API
   const hotSpotContractAddress = "0x8faB9ca27aa718B2B3eF0515AF3Bd07bB21EE99C";
-  const tokenURI = "ipfs://bafkreibto3z7jrwonc7swekfv4q2xy6dofe7y34np62m5m72gc6biglhjm";
+  const tokenURI = "ipfs://bafkreidpigxjfnjro6pxht3b5bzym2d7pe6hbwzgmkj5545kaqmaebbyly";
   const costPrice_ether = '0.006'
 
   await switchChain();

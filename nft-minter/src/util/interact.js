@@ -137,21 +137,23 @@ export const socialpass_selfMint = async () => {
   // Source: https://github.com/Aquaverse/social-mining-contracts/blob/main/abi/SocialPass.json
   const socialPassContractABI = require("../abi/SocialPass.json");
     // From Server API
-  const socialPassContractAddress = "0xAe61f1594d47E53434f235065cBd1B8324789596";
+  const socialPassContractAddress = "0xeab40FD5aA73181836A645bd43C6050ca61a07d2";
   const tokenURI = "https://app-alpha.sending.me/contract/metadata/social-pass.json";
+  const costPrice_ether = '0.00'
+  const weiAmount = web3.utils.toWei(costPrice_ether, "ether")
 
   await switchChain();
   const contract = new web3.eth.Contract(socialPassContractABI, socialPassContractAddress);
-
+  
   const transactionParameters = {
     to: socialPassContractAddress, // Required except during contract publications.
     from: window.ethereum.selectedAddress, // must match user's active address.
+    value: web3.utils.toHex(weiAmount),
     data: contract.methods
       .selfMint(tokenURI)
       .encodeABI(),
   };
-  
-// Call the balanceOf method on the NFT contract
+  // Call the balanceOf method on the NFT contract
   return await excuteTransaction(transactionParameters);
 };
 
@@ -160,9 +162,9 @@ export const hotspot_mint = async () => {
   // Source: https://github.com/Aquaverse/social-mining-contracts/blob/main/abi/HotSpot.json
   const hotSpotContractABI = require("../abi/HotSpot.json");
   // From Server API
-  const hotSpotContractAddress = "0x8faB9ca27aa718B2B3eF0515AF3Bd07bB21EE99C";
+  const hotSpotContractAddress = "0x16ad6F507C5108543B3e30F4A143fe316ec08173";
   const tokenURI = "https://app-alpha.sending.me/contract/metadata/hot-spot.json";
-  const costPrice_ether = '0.006'
+  const costPrice_ether = '0.005'
 
   await switchChain();
   const weiAmount = web3.utils.toWei(costPrice_ether, "ether")

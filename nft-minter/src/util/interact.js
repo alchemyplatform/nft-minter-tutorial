@@ -1,10 +1,13 @@
 import { pinJSONToIPFS } from "./pinata.js";
 require("dotenv").config();
 const alchemyKey = process.env.REACT_APP_ALCHEMY_KEY;
-const contractABI = require("../contract-abi.json");
-const contractAddress = "0x4C4a07F737Bf57F6632B6CAB089B78f62385aCaE";
 const { createAlchemyWeb3 } = require("@alch/alchemy-web3");
 const web3 = createAlchemyWeb3(alchemyKey);
+const etherscanLink = require('@metamask/etherscan-link')
+
+// Config for Development
+// https://github.com/Aquaverse/social-mining-contracts/blob/main/README.m
+const desiredNetworkId = 11155111; //Sepolia
 
 export const connectWallet = async () => {
   if (window.ethereum) {
@@ -84,53 +87,43 @@ export const getCurrentWalletConnected = async () => {
   }
 };
 
-async function loadContract() {
-  return new web3.eth.Contract(contractABI, contractAddress);
+
+async function switchChain() {
+  
+  // Request the current network ID from MetaMask
+  const currentNetworkId = await window.ethereum.request({ method: 'net_version' });
+
+  // Check if the current network matches the desired network
+  if (currentNetworkId !== desiredNetworkId.toString()) {
+    try {
+      // Prompt the user to switch networks
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: `0x${desiredNetworkId.toString(16)}` }],
+      });
+    } catch (error) {
+      console.error('Error switching network:', error);
+    }
+  }
+  // Continue with your smart contract interactions...
+ 
 }
 
-export const mintNFT = async (url, name, description) => {
-  if (url.trim() == "" || name.trim() == "" || description.trim() == "") {
-    return {
-      success: false,
-      status: "❗Please make sure all fields are completed before minting.",
-    };
-  }
-
-  //make metadata
-  const metadata = new Object();
-  metadata.name = name;
-  metadata.image = url;
-  metadata.description = description;
-
-  const pinataResponse = await pinJSONToIPFS(metadata);
-  if (!pinataResponse.success) {
-    return {
-      success: false,
-      status: "😢 Something went wrong while uploading your tokenURI.",
-    };
-  }
-  const tokenURI = pinataResponse.pinataUrl;
-
-  window.contract = await new web3.eth.Contract(contractABI, contractAddress);
-
-  const transactionParameters = {
-    to: contractAddress, // Required except during contract publications.
-    from: window.ethereum.selectedAddress, // must match user's active address.
-    data: window.contract.methods
-      .mintNFT(window.ethereum.selectedAddress, tokenURI)
-      .encodeABI(),
-  };
-
+async function excuteTransaction(transactionParameters) {
   try {
+
     const txHash = await window.ethereum.request({
       method: "eth_sendTransaction",
       params: [transactionParameters],
     });
+
+    const txLink = etherscanLink.createExplorerLink(txHash, desiredNetworkId)
+
     return {
       success: true,
       status:
-        "✅ Check out your transaction on Etherscan: https://ropsten.etherscan.io/tx/" +
-        txHash,
+        "✅ Check out your transaction on Etherscan: " +
+        txLink,
     };
   } catch (error) {
     return {
@@ -138,4 +131,54 @@ export const mintNFT = async (url, name, description) => {
       status: "😥 Something went wrong: " + error.message,
     };
   }
+}
+
+export const socialpass_selfMint = async () => {
+  // Source: https://github.com/Aquaverse/social-mining-contracts/blob/main/abi/SocialPass.json
+  const socialPassContractABI = require("../abi/SocialPass.json");
+    // From Server API
+  const socialPassContractAddress = "0xeab40FD5aA73181836A645bd43C6050ca61a07d2";
+  const tokenURI = "https://app-alpha.sending.me/contract/metadata/social-pass.json";
+  const costPrice_ether = '0.00'
+  const weiAmount = web3.utils.toWei(costPrice_ether, "ether")
+
+  await switchChain();
+  const contract = new web3.eth.Contract(socialPassContractABI, socialPassContractAddress);
+  
+  const transactionParameters = {
+    to: socialPassContractAddress, // Required except during contract publications.
+    from: window.ethereum.selectedAddress, // must match user's active address.
+    value: web3.utils.toHex(weiAmount),
+    data: contract.methods
+      .selfMint(tokenURI)
+      .encodeABI(),
+  };
+  // Call the balanceOf method on the NFT contract
+  return await excuteTransaction(transactionParameters);
+};
+
+
+export const hotspot_mint = async () => {
+  // Source: https://github.com/Aquaverse/social-mining-contracts/blob/main/abi/HotSpot.json
+  const hotSpotContractABI = require("../abi/HotSpot.json");
+  // From Server API
+  const hotSpotContractAddress = "0x16ad6F507C5108543B3e30F4A143fe316ec08173";
+  const tokenURI = "https://app-alpha.sending.me/contract/metadata/hot-spot.json";
+  const costPrice_ether = '0.005'
+
+  await switchChain();
+  const weiAmount = web3.utils.toWei(costPrice_ether, "ether")
+  const contract = new web3.eth.Contract(hotSpotContractABI, hotSpotContractAddress);
+
+  const transactionParameters = {
+    to: hotSpotContractAddress, // Required except during contract publications.
+    from: window.ethereum.selectedAddress, // must match user's active address.
+    value: web3.utils.toHex(weiAmount),
+    data: contract.methods
+      .mint(tokenURI)
+      .encodeABI(),
+  };
+
+
+  return await excuteTransaction(transactionParameters);
 };
